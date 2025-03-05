@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Chúc Mừng Dễ Thương</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #ffe4e1;
+            margin: 0;
+            min-height: 100vh;
+        }
+        h2 {
+            color: #ff1493;
+        }
+        input, button {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            margin-top: 10px;
+            width: 70%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff69b4;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ff1493;
+        }
+        #letter {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: white;
+            display: none;
+            box-shadow: 0px 0px 15px #ff1493;
+            position: relative;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 2s ease-out, transform 2s ease-out;
+        }
+        .error {
+            color: #ff6347;
+            font-size: 18px;
+        }
+        .success {
+            color: #32cd32;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🌸 Nhập tên của bạn để nhận thư chúc mừng! 🌸</h2>
+    <input type="text" id="nameInput" placeholder="Nhập tên của bạn">
+    <button onclick="showLetter()">💌 Xem thư</button>
+    <div id="letter"></div>
+    <div id="errorMessage" class="error" style="display: none;"></div>
+
+    <script>
+        const letters = {
+           "Nguyễn Mai Anh": "🌟 Chúc Mai Anh ngày 8/3 thật tuyệt vời, tràn ngập niềm vui và sự ấm áp! Bạn là người luôn mang lại niềm vui cho mọi người xung quanh và luôn là nguồn động lực tích cực. Mong bạn luôn thành công và tiếp tục tỏa sáng trên con đường của mình! 💖🎉",
+            "Nguyễn Quế Anh": "🌸 Chúc Quế Anh một ngày 8/3 thật ý nghĩa và tràn đầy hạnh phúc! Bạn là người nhiệt huyết, luôn cống hiến hết mình trong mọi việc. Mong bạn luôn giữ được sự đam mê và phát triển hơn nữa trong sự nghiệp và cuộc sống. 💐✨",
+            "Nguyễn Châu Anh": "🎉 Chúc Châu Anh một ngày 8/3 thật vui vẻ và đầy màu sắc! Bạn là một cô gái kiên cường và luôn khiến mọi người xung quanh cảm thấy hạnh phúc. Hy vọng bạn sẽ tiếp tục phát huy mọi tài năng và luôn mạnh mẽ theo đuổi ước mơ của mình. 🌈🌷",
+            "Hà Ngọc Ánh": "🌹 Chúc Ngọc Ánh ngày 8/3 thật đặc biệt, ngập tràn yêu thương và thành công! Bạn là người luôn tỏa sáng với sự thông minh và năng động. Hãy tiếp tục làm mọi điều bạn yêu thích và đạt được những thành tựu tuyệt vời. 🌟💕",
+            "Lê Thị Tiểu Bình": "🌟 Chúc Tiểu Bình một ngày 8/3 đầy ắp niềm vui và tình yêu! Bạn luôn là nguồn động viên cho những người xung quanh. Chúc bạn luôn giữ được đam mê trong công việc và luôn mỉm cười mỗi ngày! 💐💖",
+            "Vũ Linh Chi": "🌺 Chúc Linh Chi một ngày 8/3 thật đáng nhớ! Bạn là người thông minh và luôn sáng tạo trong mọi công việc. Chúc bạn luôn tràn đầy năng lượng và đạt được nhiều thành công trong cuộc sống! 🌟💐",
+            "Lê Huỳnh Mỹ Duyên": "🌸 Chúc Mỹ Duyên ngày 8/3 thật tươi đẹp và đầy ý nghĩa! Bạn là người luôn chân thành và rất biết quan tâm đến người khác. Chúc bạn luôn tìm thấy niềm vui trong công việc và hạnh phúc trong cuộc sống! 🎉💖",
+            "Nguyễn Thị Minh Hằng": "🎀 Chúc Minh Hằng ngày 8/3 tràn ngập yêu thương và niềm vui! Bạn là người nhiệt huyết và luôn tận tâm trong mọi việc. Chúc bạn luôn giữ vững đam mê và đạt được mọi thành công mà bạn mong muốn! 🌹💫",
+            "Lê Thị Thanh Hiếu": "🌷 Chúc Thanh Hiếu ngày 8/3 thật ấm áp và ngọt ngào! Bạn là người tỉ mỉ, cẩn thận và luôn biết cách làm mọi người xung quanh cảm thấy vui vẻ. Chúc bạn luôn phát triển và đạt được mọi ước mơ của mình! 🎉🌸",
+            "Hoàng Thị Mai Hoa": "💐 Chúc Mai Hoa một ngày 8/3 thật tuyệt vời và đầy tình yêu! Bạn là người luôn vui vẻ và yêu đời. Chúc bạn tiếp tục phát huy tài năng và khám phá những cơ hội mới trong cuộc sống! 🌟✨",
+            "Phan Thu Hương": "🌼 Chúc Thu Hương một ngày 8/3 thật tuyệt vời và ý nghĩa! Bạn là người luôn tạo ra bầu không khí ấm áp và dễ chịu cho những người xung quanh. Chúc bạn luôn vui vẻ và chinh phục mọi mục tiêu! 🎉🌸",
+            "Võ Thị Như Huỳnh": "🌸 Chúc Như Huỳnh ngày 8/3 thật rực rỡ và vui tươi! Bạn là người có trái tim ấm áp và luôn biết quan tâm đến mọi người. Chúc bạn luôn hạnh phúc và thành công trong mọi bước đi của cuộc sống! 💖🎉",
+            "Nguyễn Ngọc Khánh": "🎉 Chúc Khánh một ngày 8/3 đầy ắp niềm vui và những điều tuyệt vời! Bạn luôn là người có lòng nhiệt huyết và đam mê với công việc. Mong bạn tiếp tục gặt hái nhiều thành công và thực hiện được mọi ước mơ! 🌟💐",
+            "Trương Thùy Linh": "🌸 Chúc Thùy Linh một ngày 8/3 thật ngọt ngào và tuyệt vời! Bạn là người sáng tạo và luôn mang lại nguồn cảm hứng cho mọi người. Chúc bạn tiếp tục phát triển và luôn thành công trong mọi lĩnh vực! 💐🌟",
+            "Ma Thu Minh": "💐 Chúc Thu Minh một ngày 8/3 thật đầy niềm vui và may mắn! Bạn là người luôn mang đến sự đổi mới và sáng tạo. Chúc bạn tiếp tục theo đuổi đam mê và đạt được nhiều thành công rực rỡ! 🎉🌷",
+            "Trịnh Ngọc Minh": "🌸 Chúc Ngọc Minh một ngày 8/3 thật đáng nhớ và tuyệt vời! Bạn là người kiên cường và luôn làm việc chăm chỉ. Hy vọng bạn sẽ tiếp tục vươn lên và chinh phục những đỉnh cao mới trong công việc và cuộc sống! 💖🎉",
+            "Nguyễn Thị Yến Nhi": "🌹 Chúc Yến Nhi một ngày 8/3 thật đặc biệt và hạnh phúc! Bạn là người luôn cống hiến hết mình cho mọi việc và là nguồn động lực cho những người xung quanh. Mong bạn luôn mạnh mẽ và thành công! 💫🎉",
+            "Phan Võ Yến Nhi": "💐 Chúc Yến Nhi một ngày 8/3 thật ngọt ngào và ấm áp! Bạn luôn là người mang đến niềm vui cho những người xung quanh. Chúc bạn tiếp tục phát triển và đạt được những mục tiêu lớn trong cuộc sống! 🌸🌟",
+            "Trần Huỳnh Như": "🌷 Chúc Như một ngày 8/3 thật ý nghĩa và đáng nhớ! Bạn luôn tạo ra sự ấm áp và thân thiện cho những người xung quanh. Chúc bạn luôn thành công và đạt được mọi điều bạn mong muốn! 🎉💐",
+            "Đinh Thị Mai Phương": "🌸 Chúc Mai Phương một ngày 8/3 thật tuyệt vời và đầy yêu thương! Bạn là người chu đáo, luôn dành tình cảm chân thành cho mọi người. Mong bạn luôn tìm thấy sự bình yên trong cuộc sống và đạt được mọi ước mơ! 🌟💖",
+            "Nguyễn Thị Sang": "🎀 Chúc Sang ngày 8/3 thật ý nghĩa và hạnh phúc! Bạn là người rất đáng ngưỡng mộ với sự nhiệt tình và tận tâm. Chúc bạn sẽ luôn vững bước và đạt được mọi thành tựu mà bạn khao khát! 🌸🌟",
+            "Nguyễn Phương Thảo": "🌸 Chúc Phương Thảo một ngày 8/3 thật ngọt ngào và đầy năng lượng! Bạn luôn là người động viên, khích lệ người khác và có tấm lòng nhân ái. Chúc bạn luôn thành công và phát triển hơn nữa trong sự nghiệp! 💖🎉",
+            "Đỗ Thị Yến Thư": "🌹 Chúc Yến Thư một ngày 8/3 tràn ngập niềm vui và sự ấm áp! Bạn là người luôn giúp đỡ và chăm sóc mọi người. Chúc bạn tiếp tục tỏa sáng và thành công trong mọi lĩnh vực! 💫🌷",
+            "Nguyễn Thị Thùy": "💐 Chúc Thùy một ngày 8/3 thật tuyệt vời và đáng nhớ! Bạn là người luôn kiên nhẫn và đầy tình yêu thương. Mong bạn tiếp tục phát triển và đạt được mọi điều tuyệt vời trong cuộc sống! 🌟🌸",
+            "Phạm Thị Thùy": "🎉 Chúc Thùy một ngày 8/3 thật ngọt ngào và đầy yêu thương! Bạn là người luôn tạo ra năng lượng tích cực và khơi gợi cảm hứng cho mọi người xung quanh. Chúc bạn luôn thành công và hạnh phúc! 💖🌹",
+            "Nguyễn Mai Trang": "🌸 Chúc Mai Trang một ngày 8/3 đầy yêu thương và niềm vui! Bạn là người luôn vui vẻ và truyền cảm hứng cho những người xung quanh. Chúc bạn luôn hạnh phúc và đạt được mọi ước mơ! 💐🎉",
+ "Trần Huỳnh Như": "🌷 Chúc Như một ngày 8/3 thật ý nghĩa và đáng nhớ! Bạn luôn tạo ra sự ấm áp và thân thiện cho những người xung quanh. Chúc bạn luôn thành công và đạt được mọi điều bạn mong muốn! 🎉💐",
+            "Phạm Trần Thảo Uyên": "🌸 Chúc Thảo Uyên một ngày 8/3 tràn ngập yêu thương và hạnh phúc. Bạn là người có sự quyết đoán và lòng kiên trì trong công việc. Chúc bạn luôn mạnh mẽ, không ngừng học hỏi và tiến về phía trước để đạt được mọi mục tiêu mình đề ra. Bạn xứng đáng với tất cả những điều tốt đẹp. 🌟💖",
+            "Văn Kiều Vĩ": "🎀 Chúc Vĩ một ngày 8/3 thật tuyệt vời và đáng nhớ. Bạn luôn là người chăm chỉ, nhiệt huyết và sáng tạo trong công việc. Hy vọng bạn sẽ có thật nhiều cơ hội để phát triển và tiếp tục thành công trên con đường mình đã chọn. Chúc bạn luôn hạnh phúc và đón nhận những điều tuyệt vời đến với mình. 🌸🌟",
+            "Đinh Thị Hà Vy": "🌸 Chúc Hà Vy một ngày 8/3 thật đặc biệt và hạnh phúc. Bạn luôn là người có tấm lòng nhân ái và luôn sẵn sàng giúp đỡ những người xung quanh. Chúc bạn tiếp tục vững vàng trong mọi thử thách, đạt được những thành công lớn và luôn tìm thấy niềm vui trong từng khoảnh khắc 💖🎉",
+            "Bùi Trần Ý": "🌹 Chúc Ý một ngày 8/3 thật vui vẻ và ý nghĩa. Bạn là người thông minh và tài năng, luôn mang lại niềm vui cho mọi người. Chúc bạn tiếp tục phát huy thế mạnh của mình và đạt được những điều tuyệt vời trong công việc và cuộc sống. Hãy luôn tự tin và không ngừng mơ ước 💫🌷",
+         };
+
+        function showLetter() {
+            let name = document.getElementById("nameInput").value.trim();
+            let letterDiv = document.getElementById("letter");
+            let errorMessageDiv = document.getElementById("errorMessage");
+
+            // Clear previous error message if exists
+            errorMessageDiv.style.display = "none";
+
+            if (letters[name]) {
+                letterDiv.innerHTML = `<h3>💌 Thư gửi ${name} 💌</h3><p>${letters[name]}</p>`;
+                letterDiv.style.display = "block";
+                setTimeout(() => {
+                    letterDiv.style.opacity = "1";
+                    letterDiv.style.transform = "translateY(0)";
+                }, 200);
+            } else {
+                errorMessageDiv.innerHTML = "😢 Xin lỗi, chưa có thư cho tên này! Hãy thử lại nhé!";
+                errorMessageDiv.style.display = "block";
+                letterDiv.style.display = "none";  // Hide the letter div
+            }
+        }
+    </script>
+</body>
+</html>
+
